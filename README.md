@@ -66,7 +66,7 @@ jupyter notebook Examples/workflow.ipynb
 
 It is important to note that when predicting matchups for an upcoming week, team ratings from the previous week must be used for the prediction. Below is an example of team ratings from the end of the last NFL season. 
 
-![ModelDiagram](output.png)
+![ModelDiagram](Images/overallRankings.png)
 
 The overall team ratings can then be used to predict matchup outcomes as seen in the example below. 
 
