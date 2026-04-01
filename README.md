@@ -55,7 +55,7 @@ jupyter notebook Examples/workflow.ipynb
 
 ## How It Works
 
-1. **Data Collection** — Scrapes or loads NFL team data including offensive and defensive stats
+1. **Data Collection** — Scrapes and loads NFL team data including offensive and defensive stats
 2. **Model Fitting** — Uses a linear regression model to find correlation between stats and win percentage.
 3. **Rating Generation** — Computes offensive and defensive ratings for each team based on weights
 4. **Matchup Prediction** — Uses the model to output a win probability for each side.
