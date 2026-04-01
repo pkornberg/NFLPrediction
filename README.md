@@ -1,6 +1,6 @@
 # NFL Prediction Model
 
-This model predicts NFL game outcomes for each upcoming week by generating team ratings from webscraped data directly from NFL.com and applying a linear regression model. These ratings are then used to compare teams and predict the winner.
+This model predicts NFL game outcomes for each upcoming week by generating team ratings from webscraped data directly from NFL.com and applying a linear regression model. These ratings are then used to compare teams and predict the winner of matchups.
 
 ---
 ## Project Content
@@ -34,7 +34,7 @@ NFLPrediction/
    pip install -r requirements.txt
    ```
 
-3. Populate the `Data/` directory by running the data collection script:
+3. Populate the `Data/` directory by running functions in the data collection script:
    ```bash
    python Utils/dataCollection.py
    ```
