@@ -33,12 +33,6 @@ NFLPrediction/
    ```bash
    pip install -r requirements.txt
    ```
-
-3. Populate the `Data/` directory by running functions in the data collection script:
-   ```bash
-   python Utils/dataCollection.py
-   ```
-
 ---
 
 ## Usage
@@ -50,15 +44,6 @@ The easiest way to get started is with the example notebook:
 ```bash
 jupyter notebook Examples/workflow.ipynb
 ```
-
----
-
-## How It Works
-
-1. **Data Collection** — Scrapes and loads NFL team data including offensive and defensive stats
-2. **Model Fitting** — Uses a linear regression model to find correlation between stats and win percentage.
-3. **Rating Generation** — Computes offensive and defensive ratings for each team based on weights
-4. **Matchup Prediction** — Uses the model to output a win probability for each side.
 
 ---
 
