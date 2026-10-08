@@ -9,8 +9,9 @@ import requests as rq
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup as bs
+from tqdm import tqdm
 
-def offenseDataCollection():
+def offenseDataCollection(week):
     """
     Function to Collect NFL Team Offensive Passing and Rushing Data
 
@@ -39,7 +40,7 @@ def offenseDataCollection():
     firstDownRushing = []
 
     # Websraping with Requests and BeautifulSoup
-    for team in nflTeams:
+    for team in tqdm(nflTeams, desc = "Collecting Offensive Data"):
         page = rq.get("https://www.nfl.com/teams/" + team + "/stats")
         soup = bs(page.text, "html.parser")
         table = soup.find(class_ = "nfl-o-team-h2h-stats__list")
@@ -47,12 +48,12 @@ def offenseDataCollection():
 
         # Offense Data Collection
         offensePassing = stats[10].getText().strip()
-        avgYards = float(offensePassing.split("\n")[1].strip())
+        avgYards = float(offensePassing.split(" ")[1].strip())
         avgPassingYards.append(avgYards)
 
         # Average Rushing Yards
         offenseRushing = stats[14].getText().strip()
-        avgYards = float(offenseRushing.split("\n")[1].strip())
+        avgYards = float(offenseRushing.split(" ")[1].strip())
         avgRushingYards.append(avgYards)
 
         # Third Down Conversion Rate
@@ -60,23 +61,26 @@ def offenseDataCollection():
         thirdDownConvsersionRate.append(float(thirdDownConversion.split("/")[0].strip()) / float(thirdDownConversion.split("/")[1].strip()))
 
         # First Down Rushing and Passing
-        firstDownPassing.append(float((stats[2].getText().strip()).split("\n")[1].strip()))
-        firstDownRushing.append(float((stats[2].getText().strip()).split("\n")[0].strip()))
+        firstDownPassing.append(float((stats[2].getText().strip()).split(" ")[1].strip()))
+        firstDownRushing.append(float((stats[2].getText().strip()).split(" ")[0].strip()))
 
         # Points Per Drive
-        rushingTouchdowns = (stats[26].getText().strip()).split("\n")[0].strip()
+        rushingTouchdowns = (stats[26].getText().strip()).split(" ")[0].strip()
         passingTouchdowns = float(stats[24].getText().strip()) - float(rushingTouchdowns)
         fieldgoals = (stats[22].getText().strip()).split("/")[0].strip()
-        pointsPerDrive.append(((float(passingTouchdowns)*7) + (float(fieldgoals)*3))/126)
+        pointsPerDrive.append(((float(passingTouchdowns)*7) + (float(fieldgoals)*3))/(11*week))
 
         # Sacks and Turnovers
         sacks.append(float(stats[20].getText().strip())/3)
         turnovers = stats[28].getText().strip()
-        turnoverRate.append((float(turnovers))/126)
+        turnoverRate.append((float(turnovers))/(11*week))
         
         # Fourth Down Conversion Rate
         fourthDownConversion = stats[6].getText().strip()
-        fourthDownConversionRate.append(float(fourthDownConversion.split("/")[0].strip()) / float(fourthDownConversion.split("/")[1].strip()))
+        if float(fourthDownConversion.split("/")[1].strip()) == 0:
+            fourthDownConversionRate.append(0)
+        else:
+            fourthDownConversionRate.append(float(fourthDownConversion.split("/")[0].strip()) / float(fourthDownConversion.split("/")[1].strip()))
 
         # Win Percentage
         header = soup.find('div', class_ = "nfl-c-team-header__stats nfl-u-hide-empty")
@@ -95,7 +99,7 @@ def offenseDataCollection():
 
     return df
 
-def defenseDataCollection():
+def defenseDataCollection(week):
     """
     Function to Collect NFL Team Defensive Passing and Rushing Data
 
@@ -121,27 +125,30 @@ def defenseDataCollection():
     winPercent = []
 
     # Websraping with Requests and BeautifulSoup
-    for team in nflTeams:
+    for team in tqdm(nflTeams, desc = "Collecting Offensive Data"):
         page = rq.get("https://www.nfl.com/teams/" + team + "/stats")
         soup = bs(page.text, "html.parser")
         data = soup.find_all(class_ = "nfl-o-team-h2h-stats__value")
 
         # Average Rushing and Passing Yards Allowed
-        avgRushingYardsAllowed.append(float(data[15].text.strip().split("\n")[1]))
-        avgPassingYardsAllowed.append(float(data[19].text.strip().split("\n")[3]))
+        avgRushingYardsAllowed.append(float(data[15].text.strip().split(" ")[1]))
+        avgPassingYardsAllowed.append(float(data[19].text.strip().split(" ")[3]))
 
         # Interceptions and Sacks
-        interceptions.append(float(data[19].text.strip().split("\n")[2]))
+        interceptions.append(float(data[19].text.strip().split(" ")[2]))
         sacks.append(float(data[21].text.strip()))
     
         # Third and Fourth Down Stop Rate
         thirdDown = data[5].text.strip().split("/")
         thirdDownStopRate.append(1 - (float(thirdDown[0]) / float(thirdDown[1])))
         fourthDown = data[7].text.strip().split("/")
-        fourthDownStopRate.append(1 - (float(fourthDown[0]) / float(fourthDown[1])))
+        if float(fourthDown[1]) == 0:
+            fourthDownStopRate.append(0)
+        else: 
+            fourthDownStopRate.append(1 - (float(fourthDown[0]) / float(fourthDown[1])))
     
         # Points Per Drive Allowed
-        pointsPerDriveAllowed.append(((3*int(data[23].text.strip().split("/")[0]) + 7*(int(data[27].text.strip().split("\n")[0])))/126))
+        pointsPerDriveAllowed.append(((3*int(data[23].text.strip().split("/")[0]) + 7*(int(data[27].text.strip().split(" ")[0])))/(11*week)))
 
         # Win Percentage
         stats = soup.find('div', class_ = "nfl-c-team-header__stats nfl-u-hide-empty")

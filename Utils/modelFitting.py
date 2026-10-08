@@ -40,8 +40,8 @@ def correlationAnalysis(dataFrame):
     model.fit(X_scaled, y)
 
     # Extracting Weights
-    weights = pd.Series(model.coef_, index=features).sort_values(key=abs, ascending=False)
-    weights = pd.Series(model.coef_, index=features).abs().sort_values(ascending=False)
+    weights = pd.Series(model.coef_, index=features).sort_values(key = abs, ascending = False)
+    weights = pd.Series(model.coef_, index=features).abs().sort_values(ascending = False)
     
     return weights
 
